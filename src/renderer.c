@@ -2468,8 +2468,8 @@ static bool pass_init(struct pass_state *pass, bool acquire_image)
         goto error;
     if (!acquire_frame(pass, target))
         goto error;
-    if (!validate_structs(pass->rr, acquire_image ? image : NULL, target))
-        goto error;
+    //if (!validate_structs(pass->rr, acquire_image ? image : NULL, target))
+    //    goto error;
 
     fix_refs_and_rects(pass);
     find_fbo_format(pass);
