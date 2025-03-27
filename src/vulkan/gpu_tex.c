@@ -371,6 +371,11 @@ pl_tex vk_tex_create(pl_gpu gpu, const struct pl_tex_params *params)
         .pQueueFamilyIndices = qfs,
     };
 
+    if (tex_vk->img_fmt == VK_FORMAT_R10X6_UNORM_PACK16)
+        iinfo.format = VK_FORMAT_R16_UNORM;
+    else if (tex_vk->img_fmt == VK_FORMAT_R10X6G10X6_UNORM_2PACK16)
+        iinfo.format = VK_FORMAT_R16G16_UNORM;
+
     struct vk_malloc_params mparams = {
         .optimal = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
         .export_handle = params->export_handle,
@@ -1215,7 +1220,12 @@ pl_tex pl_vulkan_wrap(pl_gpu gpu, const struct pl_vulkan_wrap_params *params)
     tex_vk->external_img = true;
     tex_vk->held = !fmt->num_planes;
     tex_vk->img = params->image;
-    tex_vk->img_fmt = params->format;
+    if (params->format == VK_FORMAT_R10X6_UNORM_PACK16)
+        tex_vk->img_fmt = VK_FORMAT_R16_UNORM;
+    else if (params->format == VK_FORMAT_R10X6G10X6_UNORM_2PACK16)
+        tex_vk->img_fmt = VK_FORMAT_R16G16_UNORM;
+    else
+        tex_vk->img_fmt = params->format;
     tex_vk->num_planes = fmt->num_planes;
     tex_vk->usage_flags = usage;
     tex_vk->aspect = params->aspect;

@@ -415,7 +415,12 @@ void vk_setup_formats(struct pl_gpu_t *gpu)
             .pNext = has_drm_mods ? &drm_props : NULL,
         };
 
-        vk->GetPhysicalDeviceFormatProperties2KHR(vk->physd, vk_fmt->tfmt, &prop2);
+        VkFormat tfmt = vk_fmt->tfmt;
+        if (tfmt == VK_FORMAT_R10X6_UNORM_PACK16)
+            tfmt = VK_FORMAT_R16_UNORM;
+        else if (tfmt == VK_FORMAT_R10X6G10X6_UNORM_2PACK16)
+            tfmt = VK_FORMAT_R16G16_UNORM;
+        vk->GetPhysicalDeviceFormatProperties2KHR(vk->physd, tfmt, &prop2);
 
         // If wholly unsupported, try falling back to the emulation formats
         // for texture operations
